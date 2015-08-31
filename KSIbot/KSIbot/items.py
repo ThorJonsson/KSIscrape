@@ -9,17 +9,10 @@ import scrapy
 from scrapy.item import Item, Field
 
 
-class KsibotItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    title = Field()
-    link = Field()
-    desc = Field()
-
-    pass
 
 class PlayerItem(scrapy.Item):
 	name = Field()
 	year = scrapy.Field()
 	age = scrapy.Field()
 	link = scrapy.Field()
+	flokkur = scrapy.Field()
