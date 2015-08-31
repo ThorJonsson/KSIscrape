@@ -1,25 +1,33 @@
 from scrapy.spiders import Spider
-from KSIbot.items import KsibotItem
+from KSIbot.items import PlayerItem
 
 import logging
 
 
 class MySpider(Spider):
-	name = "testspider"
+	name = "agespider"
 	allowed_domains = ["ksi.is"]
+	years_to_check = 0
+
+	# default value, overwritten in main.py
 	start_urls = ["http://www.ksi.is/mot/leikmenn/?felag=107&stada=1&kyn=1&ArgangurFra=1800&ArgangurTil=2020"]
 
 	def parse(self, response):
 
-		for sel in response.xpath('//ul/li'):
-			item = KsibotItem()
-			item['title'] =  sel.xpath('a/text()').extract()
-	    		item['link'] = sel.xpath('a/@href').extract()
-            		item['desc'] = sel.xpath('text()').extract()
+		for sel in response.xpath('//tr[@class="alt"]'):
+			player = PlayerItem()
+			player['name'] = sel.xpath('td/a/text()')[0].extract().encode("utf-8")
+	    		player['year'] = sel.xpath('td[3]/text()').extract()
 
-			map(lambda x: x.encode('utf-8'), item['title'])
+			player_url = sel.xpath('td/a/@href').extract()[0]
+		    	game_info_url = '&pListi=7&dFra-dd=01&dFra-mm=01&dFra-yy=' + \
+		    			str(2015 - self.years_to_check) + '&dTil-dd=31&dTil-mm=12&dTil-yy=2015'
+		    	full_url = response.urljoin(player_url + game_info_url)
+            		player['link'] = full_url
 
-			#for title in item['title']:
-			#	item['title'] = title.encode('utf-8')
+			#utf8_encode = lambda x: x.encode('utf-8')
 
-            		yield item
+			print player['name']
+			#print player['link']
+
+            		yield player
