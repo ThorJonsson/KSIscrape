@@ -17,3 +17,9 @@ class KsibotItem(scrapy.Item):
     desc = Field()
 
     pass
+
+class PlayerItem(scrapy.Item):
+	name = Field()
+	year = scrapy.Field()
+	age = scrapy.Field()
+	link = scrapy.Field()
